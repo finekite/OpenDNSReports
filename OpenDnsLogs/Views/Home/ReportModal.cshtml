@@ -1,0 +1,79 @@
+﻿@model OpenDns.Contracts.ReportRequestDTO
+
+<div id="modal-div">
+    <script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+    @using (Ajax.BeginForm("", "Home", new AjaxOptions
+    {
+        HttpMethod = "POST",
+        UpdateTargetId = "report-view",
+        OnBegin = "getActionClicked",
+        OnFailure = "showModelValidationMessages",
+        OnSuccess = "closeModal"
+    }))
+    {
+        @Html.ValidationSummary(true)
+        <div class="modal fade" id="myModal" role="dialog">
+            <div class="modal-dialog">
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" id="close-button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Choose Options</h4>
+                    </div>
+                    <div class="modal-body">
+                        @Html.HiddenFor(x => x.ActionTaken)
+                        <div class="row" id="dates">
+                            <div class="col-lg-6">
+                                Start Date:
+                                @Html.ValidationMessageFor(x => x.StartDate, "", new { @class = "text-danger" })
+                                @Html.TextBoxFor(x => x.StartDate, new { type = "date", @class = "form-control date-class", required = "required"})
+                            </div>
+                            <div class="col-lg-6">
+                                End Date:
+                                @Html.ValidationMessageFor(x => x.EndDate, "", new { @class = "text-danger" })
+                                @Html.TextBoxFor(x => x.EndDate, new { type = "date", @class = "form-control date-class", required = "required"})
+                            </div>
+                        </div>
+                        <div class="row report-and-filter-options" style="padding-top:30px">
+                            <div class="col-lg-6" style="width:50%">
+                                Report Type:
+                                @Html.ValidationMessageFor(x => x.ReportTypes, "", new { @class = "text-danger" })
+                                @Html.EnumDropDownListFor(x => x.ReportTypes, "Select", new { @class = "form-control", required = "required" })
+                            </div>
+                        </div>
+                        <div class="row" id="user-name-passw" style="padding-top:30px" hidden>
+                            <div class="col-lg-6">
+                                OpenDNS Email:
+                                @Html.ValidationMessageFor(x => x.EmailAddress, "", new { @class = "text-danger" })
+                                @Html.TextBoxFor(x => x.EmailAddress, new { @class = "form-control email-class", type = "email"@*, required = "required"*@ })
+                            </div>
+                            <div class="col-lg-6">
+                                OpenDNS Password:
+                                @Html.ValidationMessageFor(x => x.Password, "", new { @class = "text-danger" })
+                                @Html.TextBoxFor(x => x.Password, new { @class = "form-control email-password", type = "password"@*, required = "required"*@ })
+                            </div>
+                        </div>
+                        <div class="row" id="email-options" style="padding-top:30px" hidden>
+                            <div class="col-lg-6" style="margin-left:-1px; width:50%">
+                                Email Occurence:
+                                @Html.ValidationMessageFor(x => x.EmailOccurence, "", new { @class = "text-danger" })
+                                @Html.EnumDropDownListFor(x => x.EmailOccurence, "Select", new { @class = "form-control email-class"@*, required = "required"*@})
+                            </div>
+                            <div class="col-lg-6">
+                                From When:
+                                @Html.ValidationMessageFor(x => x.FromWhen, "", new { @class = "text-danger" })
+                                @Html.EnumDropDownListFor(x => x.FromWhen, "Select", new { @class = "form-control email-class", @style = @"width:100%"@*, required = "required"*@})
+                            </div>
+                        </div>
+                        <div id="error-message"></div>
+                        <div class="modal-footer">
+                            <input type="submit" value="Submit" class="btn btn-success col-lg-2 col-lg-offset-1" />
+                            <button type="button" class="btn btn-default col-lg-2 col-lg-offset-3" style="margin-left:290px;" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+

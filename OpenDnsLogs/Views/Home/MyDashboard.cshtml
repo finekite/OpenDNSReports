@@ -1,0 +1,172 @@
+﻿<!------ Include the above in your HEAD tag ---------->
+
+<link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
+<div class="bootstrap snippet">
+    <div class="row">
+        <div class="col-lg-4 col-sm-4">
+            <div class="circle-tile">
+                <a href="#" id="now" data-toggle="modal" data-target="#myModal">
+                    <div class="circle-tile-heading dark-blue"><i class="fa fa-users fa-fw fa-3x"></i></div>
+                    <div class="circle-tile-content dark-blue">
+                        <div class="circle-tile-description text-faded"> Run report now</div>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <div class="col-lg-4 col-sm-4">
+            <div class="circle-tile ">
+                <a href="#" id="email" data-toggle="modal" data-target="#myModal">
+                    <div class="circle-tile-heading red"><i class="fa fa-users fa-fw fa-3x"></i></div>
+                    <div class="circle-tile-content red">
+                        <div class="circle-tile-description text-faded">Set Up Email Reports</div>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <div class="col-lg-4 col-sm-4">
+            <div class="circle-tile ">
+                <a href="#" data-toggle="modal" data-target="#myModal">
+                    <div class="circle-tile-heading blue"><i class="fa fa-users fa-fw fa-3x"></i></div>
+                    <div class="circle-tile-content blue">
+                        <div class="circle-tile-description text-faded"> Manage email reports</div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+    @Html.Partial("ReportModal")
+<div id="report-view"></div>
+<script>
+    $(document).ready(function () {
+        onEmailClick();
+        onReportNowClick(); 
+    });
+
+    function onEmailClick() {
+        $('#email').click(function () {
+            configureEmailLook();
+        });
+    }
+
+    function onReportNowClick() {
+        $('#now').click(function () {
+            configureReportNowLook();
+        });
+    }
+
+    function configureEmailLook() {
+            $('form').attr('action', '/Home/SignUpForEmail');
+            $('#dates').hide();
+            $('.date-class').removeAttr('required');
+            $('.email-class').attr('required');
+            $('#email-options').show();
+            $('#user-name-passw').show();
+            $('#EmailAddress').val('');
+            $('#Password').val('');
+            $('.email-class').attr('type', 'email');
+            $('.email-password').attr('type', 'password');
+    }
+
+    function configureReportNowLook() {
+            $('form').attr('action', '/Home/GenerateReportNow');
+            $('#dates').show();
+            $('.date-class').attr('required');
+            $('.email-class').removeAttr('required');
+            $('#email-options').hide();
+            $('#user-name-passw').hide();
+            $('.report-and-filter-options').css('padding-top', '30px');
+            $('.email-class').attr('type', 'text');
+            $('.email-password').attr('type', 'text');
+            $('#EmailAddress').val('p');
+            $('#Password').val('p');
+    }
+
+    function setUpEmailReport() {
+        $.ajax({
+        url: '@Url.Action("GenerateReportNow")',
+            crossDomain: true,
+            success: function (result, textStatus, request) {
+                $('#report-view').html(result);
+            },
+            error: function (txhr, ajaxOptions, thrownError) {
+                window.alert(thrownError);
+            }
+        });
+    }
+
+    function closeModal() {
+        $('#close-button').trigger('click');
+        $('#error-message').empty();
+    }
+
+    function showModelValidationMessages(parameters) {
+
+        if (parameters.responseJSON !== null && parameters.responseJSON !== undefined && !parameters.responseJSON.Success) {
+            $('#error-message').html(parameters.responseJSON.Message);
+        }
+        else {
+            var html = parameters.responseText;
+            var numberOfCharachtersFromModalBodyEndToEndOfPage = 37;
+            var modalBodyDivLength = html.trimEnd().length - numberOfCharachtersFromModalBodyEndToEndOfPage;
+            var actionTaken = $('#ActionTaken').val();
+            var modalBodyContents = html.substring(html.indexOf('<div class="modal-body">'), modalBodyDivLength);
+            $('.modal-body').replaceWith(modalBodyContents);
+            if (actionTaken === 'GenerateReportNow') {
+                configureReportNowLook();
+            }
+            else {
+                configureEmailLook();
+            }
+        }
+    }
+
+    function getNextSetOfDomains(model) {
+            $.ajax({
+                url: '@Url.Action("GetNextSet")',
+                type: 'POST',
+                data: model,
+                crossDomain: true,
+                success: function (result, textStatus, request) {
+                    $('#report-view').html(result);
+                },
+                error: function (txhr, ajaxOptions, thrownError) {
+                    console.log(thrownError);
+                }
+            });
+    }
+
+    function getPreviousSetOfDomains(model) {
+        $.ajax({
+                url: '@Url.Action("GetPreviousSet")',
+                type: 'POST',
+                data: model,
+                crossDomain: true,
+                success: function (result, textStatus, request) {
+                    $('#report-view').html(result);
+                },
+                error: function (txhr, ajaxOptions, thrownError) {
+                    console.log(thrownError);
+                }
+        });
+    }
+
+    function disableNextButton(domainListLength) {
+        if (domainListLength <= 58) {
+            $('#next-btn').prop('disabled', true);
+        }
+    }
+
+    function disablePreviousButton(page) {
+        if (page <= 1) {
+            $('#prev-btn').prop('disabled', true);
+        }
+    }
+
+    function getActionClicked() {
+        $('form').attr('action').valueOf().split('/')[2]
+        $('#ActionTaken').val($('form').attr('action').valueOf().split('/')[2]);
+    }
+</script>

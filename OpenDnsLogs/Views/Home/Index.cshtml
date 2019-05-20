@@ -1,0 +1,27 @@
+﻿@model OpenDnsLogs.Models.LoginModel
+
+<div class="container">
+    <section id="content">
+        <h1 style="position:center; font:50px Helvetica, Arial, sans-serif;">Welcome</h1>
+        @using (Html.BeginForm("Login", "Home", FormMethod.Post))
+        {
+            <h1>Login Form</h1>
+            <p style="font:15px Helvetica, Arial, sans-serif;">Enter your OpenDNS login information</p>
+            <div>
+                @Html.TextBoxFor(x => x.Login.UserName, new { id = "username", required = "Username is required", placeholder = "Username" })
+            </div>
+            <div>
+                @Html.TextBoxFor(x => x.Login.Password, new { id = "password", required = "Password is required", placeholder = "Password", type = "password" })
+            </div>
+            <div class="unsuccessful-login-message">@Model.ErrorMessage</div>
+            <div>
+                <input type="submit" value="Log in" />
+                <a href="https://login.opendns.com">Lost your password?</a>
+                <a href="https://login.opendns.com">Register</a>
+            </div>
+        }
+    </section><!-- content -->
+</div><!-- container -->
+
+
+

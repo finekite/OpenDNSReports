@@ -1,0 +1,14 @@
+﻿@model OpenDnsLogs.Models.ReportResponseModel
+
+@foreach (var message in Model.ReportResponseDTO.Messages)
+{
+    <p id="messages">@message</p>
+}
+
+<script>
+    $(document).ready(function () {
+        var success = '@Model.ReportResponseDTO.Succeeded' == 'False' ? false : true;
+        var className = success ? 'text-success' : 'text-danger';
+        $('#messages').addClass(className);
+    });
+</script>
