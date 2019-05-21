@@ -263,3 +263,4 @@ __pycache__/
 PublishProfiles/
 /OpenDnsLogs/ApplicationInsights.config
 Web*.config
+/OpenDnsLogs/Connections.config
