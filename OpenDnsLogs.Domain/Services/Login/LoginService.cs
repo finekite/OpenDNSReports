@@ -21,7 +21,17 @@ namespace OpenDnsLogs.Domain.Services.Login
         public async Task<bool> VerifyOpenDNSLogin(LoginDto loginDto)
         {
             string form = await scraperService.GetOpenDnsForm();
+            return await VerifyOpenDNSLoginCommon(loginDto, form);
+        }
 
+        public async Task<bool> VerifyOpenDNSLoginForEmailJob(LoginDto loginDto)
+        {
+            string form = await scraperService.GetOpenDnsFormForEmailJob();
+            return await VerifyOpenDNSLoginCommon(loginDto, form);
+        }
+
+        private async Task<bool> VerifyOpenDNSLoginCommon(LoginDto loginDto, string form)
+        {
             if (form.ToLower().Contains(loginDto.UserName))
             {
                 return true;

@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenDNSAuthorize", "OpenDNS
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenDns.Contracts", "Contracts\OpenDns.Contracts.csproj", "{3A88307F-2957-4ADB-9FFB-F098F922F5CB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenDnsLogs.Tests", "OpenDnsLogs.Tests\OpenDnsLogs.Tests.csproj", "{3C5AA7C2-C970-463E-BEDF-DFB15B358309}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{3A88307F-2957-4ADB-9FFB-F098F922F5CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3A88307F-2957-4ADB-9FFB-F098F922F5CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3A88307F-2957-4ADB-9FFB-F098F922F5CB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3C5AA7C2-C970-463E-BEDF-DFB15B358309}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3C5AA7C2-C970-463E-BEDF-DFB15B358309}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3C5AA7C2-C970-463E-BEDF-DFB15B358309}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3C5AA7C2-C970-463E-BEDF-DFB15B358309}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

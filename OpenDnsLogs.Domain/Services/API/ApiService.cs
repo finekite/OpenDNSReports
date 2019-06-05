@@ -7,7 +7,7 @@ namespace OpenDnsLogs.Domain.Services.API
 {
     public class ApiService : IApiService
     {
-        private readonly HttpClient httpClient;
+        private HttpClient httpClient;
 
         public ApiService(HttpClient httpClient)
         {
@@ -16,6 +16,13 @@ namespace OpenDnsLogs.Domain.Services.API
 
         public async Task<string> GetHtmlAsyncAsString(string url)
         {
+            var response = await httpClient.GetAsync(url);
+            return await response.Content.ReadAsStringAsync();
+        }
+
+        public async Task<string> GetHtmlAsyncAsStringForEmailJob(string url)
+        {
+            httpClient = new HttpClient();
             var response = await httpClient.GetAsync(url);
             return await response.Content.ReadAsStringAsync();
         }

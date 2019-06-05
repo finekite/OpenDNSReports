@@ -1,18 +1,22 @@
 ﻿using Microsoft.AspNet.Identity;
+using System;
+using System.Configuration;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace OpenDNSAuthorize
 {
     public class CustomHasher : IPasswordHasher
     {
+        internal string userId { get; set; }
+
         public string HashPassword(string password)
         {
-            // Encrypt here
-            return password;
+            return OpenDnsCryptography.Encrypt(password, userId);
         }
 
         public PasswordVerificationResult VerifyHashedPassword(string hashedPassword, string providedPassword)
         {
-            // Decrypt here 
             if (hashedPassword.Equals(providedPassword))
                 return PasswordVerificationResult.Success;
             return PasswordVerificationResult.Failed;

@@ -20,12 +20,16 @@ namespace OpenDNSAuthorize
 
         public override async Task<IdentityResult> CreateAsync(IdentityUser user, string password)
         {
+            var customHasher = this.PasswordHasher as CustomHasher;
+            customHasher.userId = user.Id;
+
             return await base.CreateAsync(user, password);
         }
 
         public async Task<string> GetPasswordAsync(IdentityUser user)
         {
-            return await store.GetPasswordHashAsync(user);
+            var hashedPassword = await store.GetPasswordHashAsync(user);
+            return OpenDnsCryptography.Decrypt(hashedPassword, user.Id);
         }
     }
 }

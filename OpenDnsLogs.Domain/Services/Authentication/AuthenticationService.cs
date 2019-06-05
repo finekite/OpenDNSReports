@@ -12,9 +12,9 @@ namespace OpenDnsLogs.Domain.Services.Authentication
 
         private ILoginService loginService;
 
-        private CustomUserManager userManager;
+        private OpenDNSUserManager userManager;
 
-        public AuthenticationService(IOpenDNSUserManager openDNSUserManager, ILoginService loginService, CustomUserManager userManager)
+        public AuthenticationService(IOpenDNSUserManager openDNSUserManager, ILoginService loginService, OpenDNSUserManager userManager)
         {
             this.openDNSUserManager = openDNSUserManager;
             this.loginService = loginService;
@@ -23,7 +23,7 @@ namespace OpenDnsLogs.Domain.Services.Authentication
 
         public async Task<string> GetPasswordAsync(IdentityUser user)
         {
-            return await userManager.GetPasswordAsync(user);
+            return await userManager.GetPassowrd(user);
         }
 
         public async Task<ReportResponseDTO> RegisterUser(ReportRequestDTO reportRequest)
@@ -34,6 +34,11 @@ namespace OpenDnsLogs.Domain.Services.Authentication
         public async Task<bool> VerifyOpenDNSLogin(LoginDto loginDto)
         {
             return await loginService.VerifyOpenDNSLogin(loginDto);
+        }
+
+        public async Task<bool> VerifyOpenDNSLoginForEmailJob(LoginDto loginDto)
+        {
+            return await loginService.VerifyOpenDNSLoginForEmailJob(loginDto);
         }
     }
 }

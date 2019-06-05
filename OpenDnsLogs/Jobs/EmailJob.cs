@@ -1,10 +1,12 @@
-﻿using OpenDns.Contracts;
+﻿using Microsoft.AspNet.Identity.EntityFramework;
+using OpenDns.Contracts;
 using OpenDNSAuthorize;
 using OpenDnsLogs.Domain.Services.Authentication;
 using OpenDnsLogs.Domain.Services.Email;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 
 namespace OpenDnsLogs.Jobs
@@ -24,14 +26,40 @@ namespace OpenDnsLogs.Jobs
             this.applicationDbContext = applicationDbContext;
         }
 
-        public void RunEmailJob(FromWhen fromWhen)
+        public async Task<bool> RunEmailJob(FromWhen fromWhen)
         {
             var allAccounts = applicationDbContext.EmailReportSettings.Where(x => x.FromWhen == fromWhen).ToList();
- 
-            foreach (var item in allAccounts)
+
+            try
             {
-               // var whoKnows = applicationDbContext.EmailReportJob.Where(x => x.Id == item.UserId)
+                foreach (var item in allAccounts)
+                {
+                    var user = applicationDbContext.Users.Where(x => x.Id == item.UserId).FirstOrDefault();
+                    var password = await authenticationService.GetPasswordAsync(user);
+
+                    if (await authenticationService.VerifyOpenDNSLoginForEmailJob(new LoginDto { UserName = user.Email, Password = password }))
+                    { 
+                        var reportRequestDTO = ConstructDto(item, user, password);
+                        var result = await emailService.SendReport(reportRequestDTO);
+                    }
+                }
             }
+            catch (Exception ex)
+            {
+                // log here
+            }
+            return true;
+        }
+
+        private ReportRequestDTO ConstructDto(EmailReportSettings emailReportSettings, IdentityUser user, string password)
+        {
+            return new ReportRequestDTO
+            {
+                EmailAddress = user.Email,
+                FromWhen = emailReportSettings.FromWhen,
+                ReportTypes = emailReportSettings.ReportTypes,
+                Password = password,
+            };
         }
     }
 }
