@@ -1,17 +1,58 @@
 ﻿using Microsoft.AspNet.Identity.EntityFramework;
+using Ninject;
 using OpenDns.Contracts;
 using OpenDNSAuthorize;
 using OpenDnsLogs.Domain.Services.Authentication;
 using OpenDnsLogs.Domain.Services.Email;
+using Quartz;
+using Quartz.Impl;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Web;
 
 namespace OpenDnsLogs.Jobs
 {
-    public class EmailJob
+    public class Scheduler
+    {
+        public static void StartSchedule(IScheduler scheduler)
+        {
+            try
+            {
+                foreach (var fromWhen in Enum.GetValues(typeof(FromWhen)).Cast<FromWhen>())
+                {
+                    scheduler.Start();
+
+                    var job = JobBuilder.Create<EmailJob>().UsingJobData("FromWhen", (int)fromWhen).Build();
+                    var trigger = TriggerBuilder.Create()
+                        .WithSchedule(GetCronSchedule(fromWhen))
+                        .StartNow()
+                        .Build();
+
+                    scheduler.ScheduleJob(job, trigger);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        private static IScheduleBuilder GetCronSchedule(FromWhen fromWhen)
+        {
+            switch (fromWhen)
+            {
+                case FromWhen.LastDay:
+                    return CronScheduleBuilder.DailyAtHourAndMinute(12, 1);
+                case FromWhen.LastMonth:
+                    return CronScheduleBuilder.MonthlyOnDayAndHourAndMinute(1, 12, 1);
+                case FromWhen.LastWeek:
+                default:
+                    return CronScheduleBuilder.WeeklyOnDayAndHourAndMinute(DayOfWeek.Sunday, 12, 1);
+            }
+        }
+    }
+
+    public class EmailJob : IJob
     {
         private readonly IEmailService emailService;
 
@@ -26,12 +67,19 @@ namespace OpenDnsLogs.Jobs
             this.applicationDbContext = applicationDbContext;
         }
 
+
+        public Task Execute(IJobExecutionContext context)
+        {
+           var fromWhen = (FromWhen)context.JobDetail.JobDataMap.GetInt("FromWhen");
+           return RunEmailJob(fromWhen);
+        }
+
         public async Task<bool> RunEmailJob(FromWhen fromWhen)
         {
-            var allAccounts = applicationDbContext.EmailReportSettings.Where(x => x.FromWhen == fromWhen).ToList();
-
             try
             {
+                var allAccounts = applicationDbContext.EmailReportSettings.Where(x => x.FromWhen == fromWhen).ToList();
+
                 foreach (var item in allAccounts)
                 {
                     var user = applicationDbContext.Users.Where(x => x.Id == item.UserId).FirstOrDefault();

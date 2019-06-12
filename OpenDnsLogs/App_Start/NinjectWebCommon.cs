@@ -14,8 +14,11 @@ namespace OpenDnsLogs.App_Start
     using OpenDnsLogs.Domain.Services.Login;
     using OpenDnsLogs.Domain.Services.Report;
     using OpenDnsLogs.Domain.Services.Scrapers;
+    using OpenDnsLogs.Jobs;
     using OpenDnsLogs.Orchestrators;
     using OpenDnsLogs.Services.Session;
+    using Quartz;
+    using Quartz.Impl;
     using System;
     using System.Net.Http;
     using System.Web;
@@ -33,7 +36,7 @@ namespace OpenDnsLogs.App_Start
             DynamicModuleUtility.RegisterModule(typeof(NinjectHttpModule));
             bootstrapper.Initialize(CreateKernel);
         }
-        
+
         /// <summary>
         /// Stops the application.
         /// </summary>
@@ -53,8 +56,15 @@ namespace OpenDnsLogs.App_Start
             {
                 kernel.Bind<Func<IKernel>>().ToMethod(ctx => () => new Bootstrapper().Kernel);
                 kernel.Bind<IHttpModule>().To<HttpApplicationInitializationHttpModule>();
+                kernel.Bind<IScheduler>().ToMethod(x =>
+                {
+                    var sched = new StdSchedulerFactory().GetScheduler().Result;
+                    sched.JobFactory = new NinjectJobFactory(kernel);
+                    return sched;
+                });
 
                 RegisterServices(kernel);
+                StartServices(kernel);
                 return kernel;
             }
             catch
@@ -62,6 +72,11 @@ namespace OpenDnsLogs.App_Start
                 kernel.Dispose();
                 throw;
             }
+        }
+
+        private static void StartServices(StandardKernel kernel)
+        {
+            Scheduler.StartSchedule(kernel.Get<IScheduler>());
         }
 
         /// <summary>
