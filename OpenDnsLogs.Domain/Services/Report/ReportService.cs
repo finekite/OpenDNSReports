@@ -41,6 +41,9 @@ namespace OpenDnsLogs.Domain.Services.Report
                     });
                 }
 
+                if (reportRequest.ReportTypes == ReportTypes.TopWebsites)
+                    return domainList.Skip(1).Take(20).ToList();
+
                 return domainList.Skip(1).ToList();
             }
         }

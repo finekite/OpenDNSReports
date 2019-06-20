@@ -103,7 +103,7 @@ namespace OpenDnsLogs.Controllers
         {
             var model = new ReportResponseModel();
 
-            if (ModelHasCustomErrors<ModelError>((x) => !x.ErrorMessage.Contains("Start") && !x.ErrorMessage.Contains("End")))
+            if (ModelHasCustomErrors<ModelError>(x => !x.ErrorMessage.Contains("Start") && !x.ErrorMessage.Contains("End")))
             {
                 Response.StatusCode = (int)HttpStatusCode.BadRequest;
                 return PartialView("ReportModal", reportRequest);
@@ -111,8 +111,12 @@ namespace OpenDnsLogs.Controllers
 
             try
             {
-                model.ReportResponseDTO = await homeOrchestrator.SetUpAccount(reportRequest);
-                return PartialView("_SignUpForEmail", model);
+                if (await homeOrchestrator.VerifyOpenDNSLogin(new LoginDto { Password = reportRequest.Password, UserName = reportRequest.EmailAddress }))
+                {
+                    model.ReportResponseDTO = await homeOrchestrator.SetUpAccount(reportRequest);
+                    return PartialView("_SignUpForEmail", model);
+                }
+                return Json("We were unable to verify your OpenDNS login. Please check your credentials and try again.");
             }
             catch (Exception ex)
             {

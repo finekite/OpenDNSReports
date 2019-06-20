@@ -18,13 +18,13 @@ namespace OpenDnsLogs.Jobs
         {
             try
             {
-                foreach (var fromWhen in Enum.GetValues(typeof(FromWhen)).Cast<FromWhen>())
+                foreach (var emailOccurence in Enum.GetValues(typeof(EmailOccurence)).Cast<EmailOccurence>())
                 {
                     scheduler.Start();
 
-                    var job = JobBuilder.Create<EmailJob>().UsingJobData("FromWhen", (int)fromWhen).Build();
+                    var job = JobBuilder.Create<EmailJob>().UsingJobData("EmailOccurence", (int)emailOccurence).Build();
                     var trigger = TriggerBuilder.Create()
-                        .WithSchedule(GetCronSchedule(fromWhen))
+                        .WithSchedule(GetCronSchedule(emailOccurence))
                         .StartNow()
                         .Build();
 
@@ -37,15 +37,15 @@ namespace OpenDnsLogs.Jobs
             }
         }
 
-        private static IScheduleBuilder GetCronSchedule(FromWhen fromWhen)
+        private static IScheduleBuilder GetCronSchedule(EmailOccurence emailOccurence)
         {
-            switch (fromWhen)
+            switch (emailOccurence)
             {
-                case FromWhen.LastDay:
+                case EmailOccurence.Daily:
                     return CronScheduleBuilder.DailyAtHourAndMinute(12, 1);
-                case FromWhen.LastMonth:
+                case EmailOccurence.Monthly:
                     return CronScheduleBuilder.MonthlyOnDayAndHourAndMinute(1, 12, 1);
-                case FromWhen.LastWeek:
+                case EmailOccurence.Weekly:
                 default:
                     return CronScheduleBuilder.WeeklyOnDayAndHourAndMinute(DayOfWeek.Sunday, 12, 1);
             }
@@ -70,15 +70,15 @@ namespace OpenDnsLogs.Jobs
 
         public Task Execute(IJobExecutionContext context)
         {
-           var fromWhen = (FromWhen)context.JobDetail.JobDataMap.GetInt("FromWhen");
-           return RunEmailJob(fromWhen);
+           var emailOccurence = (EmailOccurence)context.JobDetail.JobDataMap.GetInt("EmailOccurence");
+           return RunEmailJob(emailOccurence);
         }
 
-        public async Task<bool> RunEmailJob(FromWhen fromWhen)
+        public async Task<bool> RunEmailJob(EmailOccurence emailOccurence)
         {
             try
             {
-                var allAccounts = applicationDbContext.EmailReportSettings.Where(x => x.FromWhen == fromWhen).ToList();
+                var allAccounts = applicationDbContext.EmailReportSettings.Where(x => x.EmailOccurence == emailOccurence).ToList();
 
                 foreach (var item in allAccounts)
                 {
@@ -95,6 +95,7 @@ namespace OpenDnsLogs.Jobs
             catch (Exception ex)
             {
                 // log here
+                return false;
             }
             return true;
         }
