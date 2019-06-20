@@ -86,7 +86,7 @@ namespace OpenDnsLogs.Domain.Services.Report
 
         private string GetUrlBasedOnReportType(ReportTypes? reportType)
         {
-            return ReportTypeUrls.AllReportTypeUrls.Where(x => x.ReportType == reportType).FirstOrDefault().Url;
+            return  ReportTypeUrls.AllReportTypeUrls.Where(x => x.ReportType == reportType).FirstOrDefault().Url;
         }
     }
 }
