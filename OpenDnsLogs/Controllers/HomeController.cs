@@ -54,6 +54,10 @@ namespace OpenDnsLogs.Controllers
                     var model = await homeOrchestrator.GenerateReport(reportRequest);
                     return PartialView("_GenerateReportNow", model);
                 }
+
+                Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                return Json(new { Message = "This line was hit" });
+                    //return View("ReportModal", reportRequest);
             }
             catch (IndexOutOfRangeException ex)
             {
@@ -63,12 +67,8 @@ namespace OpenDnsLogs.Controllers
             catch (Exception ex)
             {
                 Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                return Json(new { Message = "Your account is not authrorized to retrive data from these dates. Please shorten date range.", Success = false }, JsonRequestBehavior.AllowGet);
+                return Json(new { Message = "Your account is not authrorized to retrive data from these dates. Please shorten date range." + Environment.NewLine + ex.Message, Success = false }, JsonRequestBehavior.AllowGet);
             }
-
-            Response.StatusCode = (int)HttpStatusCode.BadRequest;
-            return Json(new { Message = "This line was hit" });
-            //return View("ReportModal", reportRequest);
         }
 
         [HttpPost]
