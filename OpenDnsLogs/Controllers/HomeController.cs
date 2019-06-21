@@ -67,7 +67,8 @@ namespace OpenDnsLogs.Controllers
             }
 
             Response.StatusCode = (int)HttpStatusCode.BadRequest;
-            return View("ReportModal", reportRequest);
+            return Json(new { Message = "This line was hit" });
+            //return View("ReportModal", reportRequest);
         }
 
         [HttpPost]
