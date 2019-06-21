@@ -51,17 +51,14 @@ namespace OpenDnsLogs.Controllers
             {
                 if (!ModelHasCustomErrors<ModelError>((x) => !x.ErrorMessage.Contains("Email") && !x.ErrorMessage.Contains("From")))
                 {
-                    try
-                    {
-                        var model = await homeOrchestrator.GenerateReport(reportRequest);
-                        return PartialView("_GenerateReportNow", model);
-                catch (IndexOutOfRangeException ex)
-                    {
-                        Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                        return Json(new { Message = "Your session has expired please generate report again. Thanks!", Success = false }, JsonRequestBehavior.AllowGet);
-                    }
-
+                    var model = await homeOrchestrator.GenerateReport(reportRequest);
+                    return PartialView("_GenerateReportNow", model);
                 }
+            }
+            catch (IndexOutOfRangeException ex)
+            {
+                Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                return Json(new { Message = "Your session has expired please generate report again. Thanks!", Success = false }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
