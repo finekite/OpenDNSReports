@@ -47,23 +47,26 @@ namespace OpenDnsLogs.Controllers
         [HttpPost]
         public async Task<ActionResult> GenerateReportNow(ReportRequestDTO reportRequest)
         {
-            if (!ModelHasCustomErrors<ModelError>((x) => !x.ErrorMessage.Contains("Email") && !x.ErrorMessage.Contains("From")))
+            try
             {
-                try
+                if (!ModelHasCustomErrors<ModelError>((x) => !x.ErrorMessage.Contains("Email") && !x.ErrorMessage.Contains("From")))
                 {
-                    var model = await homeOrchestrator.GenerateReport(reportRequest);
-                    return PartialView("_GenerateReportNow", model);
-                }
+                    try
+                    {
+                        var model = await homeOrchestrator.GenerateReport(reportRequest);
+                        return PartialView("_GenerateReportNow", model);
                 catch (IndexOutOfRangeException ex)
-                {
-                    Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                    return Json(new { Message = "Your session has expired please generate report again. Thanks!", Success = false }, JsonRequestBehavior.AllowGet);
+                    {
+                        Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                        return Json(new { Message = "Your session has expired please generate report again. Thanks!", Success = false }, JsonRequestBehavior.AllowGet);
+                    }
+
                 }
-                catch (Exception ex)
-                {
-                    Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                    return Json(new { Message = "Your account is not authrorized to retrive data from these dates. Please shorten date range.", Success = false }, JsonRequestBehavior.AllowGet);
-                }
+            }
+            catch (Exception ex)
+            {
+                Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                return Json(new { Message = "Your account is not authrorized to retrive data from these dates. Please shorten date range.", Success = false }, JsonRequestBehavior.AllowGet);
             }
 
             Response.StatusCode = (int)HttpStatusCode.BadRequest;
