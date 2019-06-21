@@ -54,15 +54,10 @@ namespace OpenDnsLogs.Controllers
                     var model = await homeOrchestrator.GenerateReport(reportRequest);
                     return PartialView("_GenerateReportNow", model);
                 }
-                catch (IndexOutOfRangeException ex)
-                {
-                    Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                    return Json(new { Message = "Your session has expired please generate report again. Thanks!", Success = false }, JsonRequestBehavior.AllowGet);
-                }
                 catch (Exception ex)
                 {
                     Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                    return Json(new { Message = "Your account is not authrorized to retrive data from these dates. Please shorten date range.", Success = false }, JsonRequestBehavior.AllowGet);
+                    return Json(new { Message = "Something went wrong while processing you request. Please try reloading the page and/or shortening the date range.", Success = false }, JsonRequestBehavior.AllowGet);
                 }
             }
 
