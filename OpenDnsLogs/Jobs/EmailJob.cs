@@ -38,8 +38,9 @@ namespace OpenDnsLogs.Jobs
             catch (Exception ex)
             {
                 Log.Information(Environment.NewLine + ex.Message + Environment.NewLine + ex.StackTrace);
-                Log.CloseAndFlush();
+                //Log.CloseAndFlush();
             }
+            Log.CloseAndFlush();
         }
 
         private static IScheduleBuilder GetCronSchedule(EmailOccurence emailOccurence)
@@ -106,6 +107,7 @@ namespace OpenDnsLogs.Jobs
                 Log.CloseAndFlush();
                 return false;
             }
+            Log.CloseAndFlush();
             return true;
         }
 
