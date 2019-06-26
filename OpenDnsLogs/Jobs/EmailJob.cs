@@ -20,7 +20,7 @@ namespace OpenDnsLogs.Jobs
         {
             try
             {
-                scheduler.Start();
+                /*scheduler.Start();
 
                 var job = JobBuilder.Create<EmailJob>().UsingJobData("EmailOccurence", (int)EmailOccurence.Daily).Build();
                 var trigger = TriggerBuilder.Create().StartNow().WithSimpleSchedule(x => x.WithIntervalInSeconds(5).RepeatForever())
@@ -28,7 +28,7 @@ namespace OpenDnsLogs.Jobs
                     //.StartNow()
                     .Build();
 
-                scheduler.ScheduleJob(job, trigger);
+                scheduler.ScheduleJob(job, trigger);*/
 
                 //foreach (var emailOccurence in Enum.GetValues(typeof(EmailOccurence)).Cast<EmailOccurence>())
                 //{
