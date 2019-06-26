@@ -18,34 +18,27 @@ namespace OpenDnsLogs.Jobs
     {
         public static void StartSchedule(IScheduler scheduler)
         {
+            Log.Logger = new LoggerConfiguration().WriteTo.File(AppDomain.CurrentDomain.BaseDirectory + ConfigurationManager.AppSettings["LogFile"]).CreateLogger();
+
             try
             {
-                /*scheduler.Start();
+                foreach (var emailOccurence in Enum.GetValues(typeof(EmailOccurence)).Cast<EmailOccurence>())
+                {
+                    scheduler.Start();
 
-                var job = JobBuilder.Create<EmailJob>().UsingJobData("EmailOccurence", (int)EmailOccurence.Daily).Build();
-                var trigger = TriggerBuilder.Create().StartNow().WithSimpleSchedule(x => x.WithIntervalInSeconds(5).RepeatForever())
-                    //.WithSchedule(GetCronSchedule(emailOccurence))
-                    //.StartNow()
-                    .Build();
+                    var job = JobBuilder.Create<EmailJob>().UsingJobData("EmailOccurence", (int)emailOccurence).Build();
+                    var trigger = TriggerBuilder.Create()
+                        .WithSchedule(GetCronSchedule(emailOccurence))
+                        .StartNow()
+                        .Build();
 
-                scheduler.ScheduleJob(job, trigger);*/
-
-                //foreach (var emailOccurence in Enum.GetValues(typeof(EmailOccurence)).Cast<EmailOccurence>())
-                //{
-                //    scheduler.Start();
-
-                //    var job = JobBuilder.Create<EmailJob>().UsingJobData("EmailOccurence", (int)emailOccurence).Build();
-                //    var trigger = TriggerBuilder.Create().StartNow()
-                //        //.WithSchedule(GetCronSchedule(emailOccurence))
-                //        //.StartNow()
-                //        .Build();
-
-                //    scheduler.ScheduleJob(job, trigger);
-                //}
+                    scheduler.ScheduleJob(job, trigger);
+                }
             }
             catch (Exception ex)
             {
-                throw;
+                Log.Information(Environment.NewLine + ex.Message + Environment.NewLine + ex.StackTrace);
+                Log.CloseAndFlush();
             }
         }
 
