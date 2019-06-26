@@ -3,6 +3,7 @@ using OpenDnsLogs.Models;
 using OpenDnsLogs.Orchestrators;
 using System;
 using System.Configuration;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -122,7 +123,8 @@ namespace OpenDnsLogs.Controllers
 
         public ActionResult SeeLogs()
         {
-            return View(model: System.IO.File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + ConfigurationManager.AppSettings["LogFile"]));
+            var path = Path.Combine(Server.MapPath("~"), ConfigurationManager.AppSettings["LogFile"]);
+            return View(model: System.IO.File.ReadAllText(path));
         }
 
         private bool ModelHasCustomErrors<T>(Func<T, bool> errorCondition) where T : class
