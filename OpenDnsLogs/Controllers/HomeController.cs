@@ -2,6 +2,7 @@
 using OpenDnsLogs.Models;
 using OpenDnsLogs.Orchestrators;
 using System;
+using System.Configuration;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -117,6 +118,11 @@ namespace OpenDnsLogs.Controllers
             {
                 return Json("Something went wrong while processing your request. Please try again later" + Environment.NewLine + ex.Message);
             }
+        }
+
+        public ActionResult SeeLogs()
+        {
+            return View(model: System.IO.File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + ConfigurationManager.AppSettings["LogFile"]));
         }
 
         private bool ModelHasCustomErrors<T>(Func<T, bool> errorCondition) where T : class

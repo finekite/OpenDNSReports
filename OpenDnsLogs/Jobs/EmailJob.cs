@@ -5,8 +5,10 @@ using OpenDNSAuthorize;
 using OpenDnsLogs.Domain.Services.Authentication;
 using OpenDnsLogs.Domain.Services.Email;
 using Quartz;
-using Quartz.Impl;
+using Serilog;
+using Serilog.Core;
 using System;
+using System.Configuration;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -18,18 +20,28 @@ namespace OpenDnsLogs.Jobs
         {
             try
             {
-                foreach (var emailOccurence in Enum.GetValues(typeof(EmailOccurence)).Cast<EmailOccurence>())
-                {
-                    scheduler.Start();
+                scheduler.Start();
 
-                    var job = JobBuilder.Create<EmailJob>().UsingJobData("EmailOccurence", (int)emailOccurence).Build();
-                    var trigger = TriggerBuilder.Create()
-                        .WithSchedule(GetCronSchedule(emailOccurence))
-                        .StartNow()
-                        .Build();
+                var job = JobBuilder.Create<EmailJob>().UsingJobData("EmailOccurence", (int)EmailOccurence.Daily).Build();
+                var trigger = TriggerBuilder.Create().StartNow().WithSimpleSchedule(x => x.WithIntervalInSeconds(5).RepeatForever())
+                    //.WithSchedule(GetCronSchedule(emailOccurence))
+                    //.StartNow()
+                    .Build();
 
-                    scheduler.ScheduleJob(job, trigger);
-                }
+                scheduler.ScheduleJob(job, trigger);
+
+                //foreach (var emailOccurence in Enum.GetValues(typeof(EmailOccurence)).Cast<EmailOccurence>())
+                //{
+                //    scheduler.Start();
+
+                //    var job = JobBuilder.Create<EmailJob>().UsingJobData("EmailOccurence", (int)emailOccurence).Build();
+                //    var trigger = TriggerBuilder.Create().StartNow()
+                //        //.WithSchedule(GetCronSchedule(emailOccurence))
+                //        //.StartNow()
+                //        .Build();
+
+                //    scheduler.ScheduleJob(job, trigger);
+                //}
             }
             catch (Exception ex)
             {
@@ -58,7 +70,7 @@ namespace OpenDnsLogs.Jobs
 
         private readonly IAuthenticationService authenticationService;
 
-        private readonly ApplicationDbContext applicationDbContext;
+        private readonly ApplicationDbContext applicationDbContext; 
 
         public EmailJob(IEmailService emailService, IAuthenticationService authenticationService, ApplicationDbContext applicationDbContext)
         {
@@ -76,6 +88,8 @@ namespace OpenDnsLogs.Jobs
 
         public async Task<bool> RunEmailJob(EmailOccurence emailOccurence)
         {
+            Log.Logger = new LoggerConfiguration().WriteTo.File(AppDomain.CurrentDomain.BaseDirectory + ConfigurationManager.AppSettings["LogFile"]).CreateLogger();
+
             try
             {
                 var allAccounts = applicationDbContext.EmailReportSettings.Where(x => x.EmailOccurence == emailOccurence).ToList();
@@ -95,6 +109,8 @@ namespace OpenDnsLogs.Jobs
             catch (Exception ex)
             {
                 // log here
+                Log.Information(Environment.NewLine + ex.Message + Environment.NewLine + ex.StackTrace);
+                Log.CloseAndFlush();
                 return false;
             }
             return true;
