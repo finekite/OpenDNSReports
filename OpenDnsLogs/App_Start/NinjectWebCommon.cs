@@ -17,8 +17,6 @@ namespace OpenDnsLogs.App_Start
     using OpenDnsLogs.Jobs;
     using OpenDnsLogs.Orchestrators;
     using OpenDnsLogs.Services.Session;
-    using Quartz;
-    using Quartz.Impl;
     using System;
     using System.Net.Http;
     using System.Web;
@@ -56,18 +54,11 @@ namespace OpenDnsLogs.App_Start
             {
                 kernel.Bind<Func<IKernel>>().ToMethod(ctx => () => new Bootstrapper().Kernel);
                 kernel.Bind<IHttpModule>().To<HttpApplicationInitializationHttpModule>();
-                kernel.Bind<IScheduler>().ToMethod(x =>
-                {
-                    var sched = new StdSchedulerFactory().GetScheduler().Result;
-                    sched.JobFactory = new NinjectJobFactory(kernel);
-                    return sched;
-                });
-
                 RegisterServices(kernel);
                 StartServices(kernel);
                 return kernel;
             }
-            catch
+            catch (Exception ex)
             {
                 kernel.Dispose();
                 throw;
@@ -76,7 +67,7 @@ namespace OpenDnsLogs.App_Start
 
         private static void StartServices(StandardKernel kernel)
         {
-            Scheduler.StartSchedule(kernel.Get<IScheduler>());
+            kernel.Get<Scheduler>().StartSchedule();
         }
 
         /// <summary>
@@ -96,6 +87,8 @@ namespace OpenDnsLogs.App_Start
             kernel.Bind<IEmailService>().To<EmailService>().InSingletonScope();
             kernel.Bind<IHtmlBuilder>().To<HtmlGenerator>().InSingletonScope();
             kernel.Bind<IHomeOrchestrator>().To<HomeOrchestrator>().InSingletonScope();
+            kernel.Bind<IEmailJob>().To<EmailJob>().InSingletonScope();
+            kernel.Bind<Scheduler>().ToSelf().InSingletonScope();
         }
     }
 }

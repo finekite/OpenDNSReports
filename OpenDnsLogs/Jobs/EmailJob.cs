@@ -4,61 +4,61 @@ using OpenDns.Contracts;
 using OpenDNSAuthorize;
 using OpenDnsLogs.Domain.Services.Authentication;
 using OpenDnsLogs.Domain.Services.Email;
-using Quartz;
 using Serilog;
 using Serilog.Core;
 using System;
 using System.Configuration;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Timers;
 
 namespace OpenDnsLogs.Jobs
 {
     public class Scheduler
     {
-        public static void StartSchedule(IScheduler scheduler)
+        private readonly IEmailJob emailJob;
+
+        public Scheduler(IEmailJob emailJob)
         {
-            Log.Logger = new LoggerConfiguration().WriteTo.File(AppDomain.CurrentDomain.BaseDirectory + ConfigurationManager.AppSettings["LogFile"]).CreateLogger();
-
-            try
-            {
-                foreach (var emailOccurence in Enum.GetValues(typeof(EmailOccurence)).Cast<EmailOccurence>())
-                {
-                    scheduler.Start();
-
-                    var job = JobBuilder.Create<EmailJob>().UsingJobData("EmailOccurence", (int)emailOccurence).Build();
-                    var trigger = TriggerBuilder.Create()
-                        .WithSchedule(GetCronSchedule(emailOccurence))
-                        .StartNow()
-                        .Build();
-
-                    scheduler.ScheduleJob(job, trigger);
-                }
-            }
-            catch (Exception ex)
-            {
-                Log.Information(Environment.NewLine + ex.Message + Environment.NewLine + ex.StackTrace);
-                //Log.CloseAndFlush();
-            }
-            Log.CloseAndFlush();
+            this.emailJob = emailJob;
         }
 
-        private static IScheduleBuilder GetCronSchedule(EmailOccurence emailOccurence)
+        public void StartSchedule()
+        {
+            foreach (var emailOccurence in Enum.GetValues(typeof(EmailOccurence)).Cast<EmailOccurence>())
+            {
+                var timer = new Timer(GetIntervalFromOccurence(emailOccurence));
+                timer.Elapsed += (sender, args) => { RunEmailJob(emailOccurence); };
+                timer.Enabled = true;
+            }
+        }
+
+        private void RunEmailJob(EmailOccurence emailOccurence)
+        {
+            emailJob.RunEmailJob(emailOccurence);
+        }
+
+        private static double GetIntervalFromOccurence(EmailOccurence emailOccurence)
         {
             switch (emailOccurence)
             {
                 case EmailOccurence.Daily:
-                    return CronScheduleBuilder.DailyAtHourAndMinute(12, 54);
+                    return GetMiliSecondsFromDates(DateTime.Now, DateTime.Now.AddDays(1));
                 case EmailOccurence.Monthly:
-                    return CronScheduleBuilder.MonthlyOnDayAndHourAndMinute(1, 12, 1);
+                    return 300000;
                 case EmailOccurence.Weekly:
                 default:
-                    return CronScheduleBuilder.WeeklyOnDayAndHourAndMinute(DayOfWeek.Sunday, 12, 1);
+                    return GetMiliSecondsFromDates(DateTime.Now, DateTime.Now.AddDays(7));
             }
+        }
+
+        private static double GetMiliSecondsFromDates(DateTime start, DateTime end)
+        {
+            return (end - start).TotalMilliseconds;
         }
     }
 
-    public class EmailJob : IJob
+    public class EmailJob : IEmailJob
     {
         private readonly IEmailService emailService;
 
@@ -71,13 +71,6 @@ namespace OpenDnsLogs.Jobs
             this.emailService = emailService;
             this.authenticationService = authenticationService;
             this.applicationDbContext = applicationDbContext;
-        }
-
-
-        public Task Execute(IJobExecutionContext context)
-        {
-           var emailOccurence = (EmailOccurence)context.JobDetail.JobDataMap.GetInt("EmailOccurence");
-           return RunEmailJob(emailOccurence);
         }
 
         public async Task<bool> RunEmailJob(EmailOccurence emailOccurence)
