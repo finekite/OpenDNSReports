@@ -48,7 +48,7 @@ namespace OpenDnsLogs.Jobs
             switch (emailOccurence)
             {
                 case EmailOccurence.Daily:
-                    return CronScheduleBuilder.DailyAtHourAndMinute(12, 40);
+                    return CronScheduleBuilder.DailyAtHourAndMinute(12, 54);
                 case EmailOccurence.Monthly:
                     return CronScheduleBuilder.MonthlyOnDayAndHourAndMinute(1, 12, 1);
                 case EmailOccurence.Weekly:
