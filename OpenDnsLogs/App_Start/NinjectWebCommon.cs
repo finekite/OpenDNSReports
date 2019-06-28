@@ -14,7 +14,6 @@ namespace OpenDnsLogs.App_Start
     using OpenDnsLogs.Domain.Services.Login;
     using OpenDnsLogs.Domain.Services.Report;
     using OpenDnsLogs.Domain.Services.Scrapers;
-    using OpenDnsLogs.Jobs;
     using OpenDnsLogs.Orchestrators;
     using OpenDnsLogs.Services.Session;
     using System;
@@ -67,7 +66,6 @@ namespace OpenDnsLogs.App_Start
 
         private static void StartServices(StandardKernel kernel)
         {
-            kernel.Get<Scheduler>().StartSchedule();
         }
 
         /// <summary>
@@ -87,8 +85,6 @@ namespace OpenDnsLogs.App_Start
             kernel.Bind<IEmailService>().To<EmailService>().InSingletonScope();
             kernel.Bind<IHtmlBuilder>().To<HtmlGenerator>().InSingletonScope();
             kernel.Bind<IHomeOrchestrator>().To<HomeOrchestrator>().InSingletonScope();
-            kernel.Bind<IEmailJob>().To<EmailJob>().InSingletonScope();
-            kernel.Bind<Scheduler>().ToSelf().InSingletonScope();
         }
     }
 }
