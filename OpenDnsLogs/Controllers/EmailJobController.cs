@@ -54,11 +54,11 @@ namespace OpenDnsLogs.Controllers
             {
                 Log.Information(Environment.NewLine + ex.Message + Environment.NewLine + ex.StackTrace);
                 Log.CloseAndFlush();
-                return Json(new { Success = false });
+                return Json(new { Success = false }, JsonRequestBehavior.AllowGet);
             }
 
             Log.CloseAndFlush();
-            return Json(new { Success = true });
+            return Json(new { Success = true }, JsonRequestBehavior.AllowGet);
         }
 
         private ReportRequestDTO ConstructDto(EmailReportSettings emailReportSettings, IdentityUser user, string password)
