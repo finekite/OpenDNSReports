@@ -8,7 +8,7 @@ namespace OpenDnsLogs.Domain.Services.Authentication
     {
         Task<ReportResponseDTO> RegisterUser(ReportRequestDTO reportRequest);
 
-        Task<bool> VerifyOpenDNSLoginForEmailJob(LoginDto loginDto);
+        Task<bool> VerifyOpenDNSLoginNewHttpClient(LoginDto loginDto);
 
         Task<bool> VerifyOpenDNSLogin(LoginDto loginDto);
 

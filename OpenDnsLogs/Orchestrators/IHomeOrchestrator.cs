@@ -15,5 +15,7 @@ namespace OpenDnsLogs.Orchestrators
         DomainListModel GetPreviousSet(DomainListModel model);
 
         Task<ReportResponseDTO> SetUpAccount(ReportRequestDTO reportRequest);
+
+        Task<bool> VerifyOpenDNSLoginNewHttpClient(LoginDto loginDto);
     }
 }

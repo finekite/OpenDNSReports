@@ -43,7 +43,7 @@ namespace OpenDnsLogs.Controllers
                     var user = applicationDbContext.Users.Where(x => x.Id == item.UserId).FirstOrDefault();
                     var password = await authenticationService.GetPasswordAsync(user);
 
-                    if (await authenticationService.VerifyOpenDNSLoginForEmailJob(new LoginDto { UserName = user.Email, Password = password }))
+                    if (await authenticationService.VerifyOpenDNSLoginNewHttpClient(new LoginDto { UserName = user.Email, Password = password }))
                     {
                         var reportRequestDTO = ConstructDto(item, user, password);
                         var result = await emailService.SendReport(reportRequestDTO);

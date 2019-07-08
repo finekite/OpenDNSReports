@@ -36,9 +36,9 @@ namespace OpenDnsLogs.Domain.Services.Authentication
             return await loginService.VerifyOpenDNSLogin(loginDto);
         }
 
-        public async Task<bool> VerifyOpenDNSLoginForEmailJob(LoginDto loginDto)
+        public async Task<bool> VerifyOpenDNSLoginNewHttpClient(LoginDto loginDto)
         {
-            return await loginService.VerifyOpenDNSLoginForEmailJob(loginDto);
+            return await loginService.VerifyOpenDNSLoginNewHttpClient(loginDto);
         }
     }
 }

@@ -8,7 +8,7 @@ namespace OpenDnsLogs.Domain.Services.Scrapers
     {
         Task<string> GetLoginPage(LoginDto loginDto, string token);
 
-        Task<string> GetOpenDnsFormForEmailJob();
+        Task<string> GetOpenDnsFormNewHttpClient();
 
         Task<string> GetOpenDnsForm();
 

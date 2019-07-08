@@ -7,6 +7,6 @@ namespace OpenDnsLogs.Domain.Services.Login
     {
         Task<bool> VerifyOpenDNSLogin(LoginDto loginDto);
 
-        Task<bool> VerifyOpenDNSLoginForEmailJob(LoginDto loginDto);
+        Task<bool> VerifyOpenDNSLoginNewHttpClient(LoginDto loginDto);
     }
 }

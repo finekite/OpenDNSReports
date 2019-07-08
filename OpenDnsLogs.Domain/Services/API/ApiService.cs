@@ -20,7 +20,7 @@ namespace OpenDnsLogs.Domain.Services.API
             return await response.Content.ReadAsStringAsync();
         }
 
-        public async Task<string> GetHtmlAsyncAsStringForEmailJob(string url)
+        public async Task<string> GetHtmlAsyncNewHttpClient(string url)
         {
             httpClient = new HttpClient();
             var response = await httpClient.GetAsync(url);

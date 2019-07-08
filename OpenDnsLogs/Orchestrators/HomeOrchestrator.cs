@@ -88,5 +88,10 @@ namespace OpenDnsLogs.Orchestrators
         {
             return await authenticationService.VerifyOpenDNSLogin(loginDto);
         }
+
+        public async Task<bool> VerifyOpenDNSLoginNewHttpClient(LoginDto loginDto)
+        {
+            return await authenticationService.VerifyOpenDNSLoginNewHttpClient(loginDto);
+        }
     }
 }

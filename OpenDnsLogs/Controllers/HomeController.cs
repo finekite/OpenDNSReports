@@ -29,7 +29,7 @@ namespace OpenDnsLogs.Controllers
         {
             try
             {
-                if (await homeOrchestrator.VerifyOpenDNSLogin(model.Login))
+                if (await homeOrchestrator.VerifyOpenDNSLoginNewHttpClient(model.Login))
                 {
                     return View("MyDashboard");
                 }

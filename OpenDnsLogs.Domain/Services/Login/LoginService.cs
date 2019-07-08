@@ -24,9 +24,9 @@ namespace OpenDnsLogs.Domain.Services.Login
             return await VerifyOpenDNSLoginCommon(loginDto, form);
         }
 
-        public async Task<bool> VerifyOpenDNSLoginForEmailJob(LoginDto loginDto)
+        public async Task<bool> VerifyOpenDNSLoginNewHttpClient(LoginDto loginDto)
         {
-            string form = await scraperService.GetOpenDnsFormForEmailJob();
+            string form = await scraperService.GetOpenDnsFormNewHttpClient();
             return await VerifyOpenDNSLoginCommon(loginDto, form);
         }
 

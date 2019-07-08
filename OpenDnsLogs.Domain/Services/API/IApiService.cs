@@ -8,7 +8,7 @@ namespace OpenDnsLogs.Domain.Services.API
     {
         Task<string> GetHtmlAsyncAsString(string url);
 
-        Task<string> GetHtmlAsyncAsStringForEmailJob(string url);
+        Task<string> GetHtmlAsyncNewHttpClient(string url);
 
         Task<HttpResponseMessage> PostHtmlAsync(FormUrlEncodedContent content, string url);
 

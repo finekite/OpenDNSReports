@@ -26,13 +26,13 @@ namespace OpenDnsLogs.Domain.Services.Scrapers
             return await apiService.GetHtmlAsyncAsString(ConfigurationManager.AppSettings["OpenDNSDashboardUrl"]);
         }
 
-        public async Task<string> GetOpenDnsFormForEmailJob()
+        public async Task<string> GetOpenDnsFormNewHttpClient()
         {
             // They tend to switch between these two urls so keep them both
             //https://dashboard.opendns.com
             //https://login.opendns.com/?source=dashboard
 
-            return await apiService.GetHtmlAsyncAsStringForEmailJob(ConfigurationManager.AppSettings["OpenDNSDashboardUrl"]);
+            return await apiService.GetHtmlAsyncNewHttpClient(ConfigurationManager.AppSettings["OpenDNSDashboardUrl"]);
         }
 
         public async Task<string> GetLoginPage(LoginDto loginDto, string token)
