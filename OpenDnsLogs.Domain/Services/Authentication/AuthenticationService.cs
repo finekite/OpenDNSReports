@@ -12,18 +12,16 @@ namespace OpenDnsLogs.Domain.Services.Authentication
 
         private ILoginService loginService;
 
-        private OpenDNSUserManager userManager;
 
-        public AuthenticationService(IOpenDNSUserManager openDNSUserManager, ILoginService loginService, OpenDNSUserManager userManager)
+        public AuthenticationService(IOpenDNSUserManager openDNSUserManager, ILoginService loginService)
         {
             this.openDNSUserManager = openDNSUserManager;
             this.loginService = loginService;
-            this.userManager = userManager;
         }
 
         public async Task<string> GetPasswordAsync(IdentityUser user)
         {
-            return await userManager.GetPassowrd(user);
+            return await openDNSUserManager.GetPassowrd(user);
         }
 
         public async Task<ReportResponseDTO> RegisterUser(ReportRequestDTO reportRequest)

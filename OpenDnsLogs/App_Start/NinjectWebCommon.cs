@@ -3,6 +3,8 @@
 
 namespace OpenDnsLogs.App_Start
 {
+    using Microsoft.Extensions.Caching.Memory;
+    using Microsoft.Extensions.Options;
     using Microsoft.Web.Infrastructure.DynamicModuleHelper;
     using Ninject;
     using Ninject.Web.Common;
@@ -74,6 +76,8 @@ namespace OpenDnsLogs.App_Start
         /// <param name="kernel">The kernel.</param>
         private static void RegisterServices(IKernel kernel) 
         {
+            kernel.Bind<IOptions<MemoryCacheOptions>>().To<MemoryCacheOptions>().InSingletonScope();
+            kernel.Bind<IMemoryCache>().To<MemoryCache>().InSingletonScope();
             kernel.Bind<HttpClient>().To<HttpClient>().InSingletonScope();
             kernel.Bind<IApiService>().To<ApiService>().InSingletonScope();
             kernel.Bind<IScraperService>().To<ScraperService>().InSingletonScope();
