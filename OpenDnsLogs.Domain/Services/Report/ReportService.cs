@@ -71,16 +71,17 @@ namespace OpenDnsLogs.Domain.Services.Report
 
         private string BuildDatesFromWhen(FromWhen? fromWhen)
         {
-            var today = DateTime.Today.ToShortDateString();
+            var dateFormat = "yyyy-MM-dd";
+            var today = DateTime.Today.ToString(dateFormat);
 
             switch (fromWhen)
             {
                 case FromWhen.LastDay:
-                    return $"{DateTime.Today.AddDays(-1).ToShortDateString()}to{today}";
+                    return $"{DateTime.Today.AddDays(-1).ToString(dateFormat)}to{today}";
                 case FromWhen.LastMonth:
-                    return $"{DateTime.Today.AddMonths(-1).ToShortDateString()}to{today}";
+                    return $"{DateTime.Today.AddMonths(-1).ToString(dateFormat)}to{today}";
                 default:
-                    return $"{DateTime.Today.AddDays(-7).ToShortDateString()}to{today}";
+                    return $"{DateTime.Today.AddDays(-7).ToString(dateFormat)}to{today}";
             }
         }
 
