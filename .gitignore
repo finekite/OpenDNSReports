@@ -264,3 +264,4 @@ PublishProfiles/
 /OpenDnsLogs/ApplicationInsights.config
 Web*.config
 /OpenDnsLogs/Connections.config
+/OpenDnsLogs/Models/Error.cs

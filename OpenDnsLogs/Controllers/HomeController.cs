@@ -1,7 +1,11 @@
-﻿using OpenDns.Contracts;
+﻿using Newtonsoft.Json;
+using OpenDns.Contracts;
 using OpenDnsLogs.Models;
 using OpenDnsLogs.Orchestrators;
+using Serilog;
+using Serilog.Events;
 using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Linq;
@@ -140,6 +144,19 @@ namespace OpenDnsLogs.Controllers
                 }
             }
             return false;
+        }
+
+        protected override void OnException(ExceptionContext filterContext)
+        {
+            filterContext.ExceptionHandled = true;
+
+            var exception = filterContext.Exception;
+
+            Log.Logger = new LoggerConfiguration().WriteTo.File(AppDomain.CurrentDomain.BaseDirectory + ConfigurationManager.AppSettings["LogFile"]).CreateLogger();
+            Log.Information("{@Exception}", exception);
+            Log.CloseAndFlush();
+
+            base.OnException(filterContext);
         }
     }
 }
