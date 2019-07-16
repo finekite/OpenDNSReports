@@ -121,5 +121,17 @@ namespace OpenDnsLogs.Domain.Services.Email
             filePath = HostingEnvironment.MapPath(@"~/EmailTemplate.html");
             return string.Format(File.ReadAllText(filePath), reportType, htmlString);
         }
+
+        public List<EmailReportSettings> GetEmailReportSettings(string userid)
+        {
+            return applicationDbContext.EmailReportSettings.Where(x => x.UserId == userid).ToList();
+        }
+
+        public void AddReportSetting(EmailReportSettings emailReportSettings)
+        {
+            applicationDbContext.EmailReportSettings.Add(emailReportSettings);
+
+            applicationDbContext.SaveChangesAsync();
+        }
     }
 }

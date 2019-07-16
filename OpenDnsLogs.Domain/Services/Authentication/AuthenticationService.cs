@@ -38,5 +38,10 @@ namespace OpenDnsLogs.Domain.Services.Authentication
         {
             return await loginService.VerifyOpenDNSLoginNewHttpClient(loginDto);
         }
+
+        public async Task<string> GetUserId(string email)
+        {
+            return await openDNSUserManager.GetUserId(email);
+        }
     }
 }

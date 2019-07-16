@@ -214,6 +214,7 @@
     </Compile>
     <Compile Include="Models\DomainListModel.cs" />
     <Compile Include="Models\LoginModel.cs" />
+    <Compile Include="Models\ManageEmailReportsModel.cs" />
     <Compile Include="Models\ReportResponseModel.cs" />
     <Compile Include="Orchestrators\HomeOrchestrator.cs" />
     <Compile Include="Orchestrators\IHomeOrchestrator.cs" />
@@ -309,6 +310,7 @@
     <Content Include="Scripts\popper-utils.min.js.map" />
     <Content Include="Scripts\popper-utils.js.map" />
     <Content Include="Views\Home\SeeLogs.cshtml" />
+    <Content Include="Views\Home\_ManageReportSettings.cshtml" />
     <None Include="Web.alt.config" />
   </ItemGroup>
   <ItemGroup>

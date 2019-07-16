@@ -9,5 +9,7 @@ namespace OpenDNSAuthorize
         Task<ReportResponseDTO> RegisterUser(ReportRequestDTO reportRequest);
 
         Task<string> GetPassowrd(IdentityUser identityUser);
+
+        Task<string> GetUserId(string email);
     }
 }

@@ -31,5 +31,11 @@ namespace OpenDNSAuthorize
             var hashedPassword = await store.GetPasswordHashAsync(user);
             return OpenDnsCryptography.Decrypt(hashedPassword, user.Id);
         }
+
+        public async Task<string> GetUserId(string email)
+        {
+            var user = await base.FindByEmailAsync(email);
+            return user != null ? user.Id : null;
+        }
     }
 }

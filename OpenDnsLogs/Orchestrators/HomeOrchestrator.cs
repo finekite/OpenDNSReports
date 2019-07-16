@@ -93,5 +93,27 @@ namespace OpenDnsLogs.Orchestrators
         {
             return await authenticationService.VerifyOpenDNSLoginNewHttpClient(loginDto);
         }
+
+        public async Task<List<EmailReportSettings>> GetEmailReportSettings(string email)
+        {
+            var userid = await GetUserId(email);
+
+            if (string.IsNullOrEmpty(userid))
+            {
+                return null;
+            }
+            return emailService.GetEmailReportSettings(userid);
+        }
+
+        public async Task<string> GetUserId(string email)
+        {
+            return await authenticationService.GetUserId(email);
+        }
+
+        public void AddEmailReportSetting(ManageEmailReportsModel reportsModel)
+        {
+            reportsModel.EmailReportSettings.UserId = reportsModel.UserId;
+            emailService.AddReportSetting(reportsModel.EmailReportSettings);
+        }
     }
 }

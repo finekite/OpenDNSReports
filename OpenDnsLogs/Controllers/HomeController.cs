@@ -1,11 +1,8 @@
-﻿using Newtonsoft.Json;
-using OpenDns.Contracts;
+﻿using OpenDns.Contracts;
 using OpenDnsLogs.Models;
 using OpenDnsLogs.Orchestrators;
 using Serilog;
-using Serilog.Events;
 using System;
-using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Linq;
@@ -35,7 +32,7 @@ namespace OpenDnsLogs.Controllers
             {
                 if (await homeOrchestrator.VerifyOpenDNSLoginNewHttpClient(model.Login))
                 {
-                    return View("MyDashboard");
+                    return View("MyDashboard", new ReportRequestDTO { EmailAddress = model.Login.UserName, Password = model.Login.Password });
                 }
 
                 model.ErrorMessage = "Login unsuccessful. Please ensure you have an OpenDns account";
@@ -123,6 +120,38 @@ namespace OpenDnsLogs.Controllers
             {
                 return Json("Something went wrong while processing your request. Please try again later" + Environment.NewLine + ex.Message);
             }
+        }
+
+        public async Task<ActionResult> ManageEmailReports(string email)
+        {
+            try
+            {
+                var model = new ManageEmailReportsModel
+                {
+                    EmailReportSettingsList = await homeOrchestrator.GetEmailReportSettings(email),
+                    Email = email
+                };
+
+                if (model.EmailReportSettingsList == null || !model.EmailReportSettingsList.Any())
+                {
+                    return Json("We could not find any reports for your account. Please go to Set Up Email Reports to set up your email settings.", JsonRequestBehavior.AllowGet);
+                }
+
+                model.UserId = model.EmailReportSettingsList.FirstOrDefault().UserId;
+
+                return View("_ManageReportSettings", model);
+            }
+            catch (Exception ex)
+            {
+                return Json("Something went wrong while processing your request. Please try again later" + Environment.NewLine + ex.Message, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> ManageEmailReports(ManageEmailReportsModel model)
+        {
+            homeOrchestrator.AddEmailReportSetting(model);
+            return await ManageEmailReports(model.Email);
         }
 
         public ActionResult SeeLogs()

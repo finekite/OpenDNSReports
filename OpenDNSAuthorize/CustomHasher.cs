@@ -17,7 +17,7 @@ namespace OpenDNSAuthorize
 
         public PasswordVerificationResult VerifyHashedPassword(string hashedPassword, string providedPassword)
         {
-            if (hashedPassword.Equals(providedPassword))
+            if (hashedPassword.Equals(HashPassword(providedPassword)))
                 return PasswordVerificationResult.Success;
             return PasswordVerificationResult.Failed;
         }

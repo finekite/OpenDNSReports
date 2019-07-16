@@ -13,5 +13,7 @@ namespace OpenDnsLogs.Domain.Services.Authentication
         Task<bool> VerifyOpenDNSLogin(LoginDto loginDto);
 
         Task<string> GetPasswordAsync(IdentityUser user);
+
+        Task<string> GetUserId(string email);
     }
 }

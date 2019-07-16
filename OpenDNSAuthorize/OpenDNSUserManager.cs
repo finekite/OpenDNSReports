@@ -17,7 +17,7 @@ namespace OpenDNSAuthorize
 
         public async Task<ReportResponseDTO> RegisterUser(ReportRequestDTO reportRequest)
         {
-            var user = new IdentityUser { UserName = reportRequest.EmailAddress, Email = reportRequest.EmailAddress };
+            var user = new IdentityUser { UserName = reportRequest.EmailAddress, Email = reportRequest.EmailAddress, EmailConfirmed = true };
             var result = await userManager.CreateAsync(user, reportRequest.Password);
             reportRequest.UserId = user.Id;
 
@@ -33,6 +33,11 @@ namespace OpenDNSAuthorize
         public async Task<string> GetPassowrd(IdentityUser identityUser)
         {
            return await userManager.GetPasswordAsync(identityUser);
+        }
+
+        public async Task<string> GetUserId(string email)
+        {
+            return await userManager.GetUserId(email);
         }
     }
 }

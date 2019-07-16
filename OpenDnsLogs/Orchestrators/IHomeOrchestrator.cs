@@ -1,5 +1,6 @@
 ﻿using OpenDns.Contracts;
 using OpenDnsLogs.Models;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace OpenDnsLogs.Orchestrators
@@ -17,5 +18,11 @@ namespace OpenDnsLogs.Orchestrators
         Task<ReportResponseDTO> SetUpAccount(ReportRequestDTO reportRequest);
 
         Task<bool> VerifyOpenDNSLoginNewHttpClient(LoginDto loginDto);
+
+        Task<List<EmailReportSettings>> GetEmailReportSettings(string email);
+
+        Task<string> GetUserId(string email);
+
+        void AddEmailReportSetting(ManageEmailReportsModel reportsModel);
     }
 }
