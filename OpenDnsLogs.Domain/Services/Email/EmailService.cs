@@ -131,7 +131,34 @@ namespace OpenDnsLogs.Domain.Services.Email
         {
             applicationDbContext.EmailReportSettings.Add(emailReportSettings);
 
-            applicationDbContext.SaveChangesAsync();
+            var res = applicationDbContext.SaveChanges();
+        }
+
+        public void EditReportSetting(EmailReportSettings emailReportSettings)
+        {
+            var settingInDb = applicationDbContext.EmailReportSettings.SingleOrDefault(x => x.Id == emailReportSettings.Id);
+
+            if (settingInDb != null)
+            {
+                settingInDb.UserId = emailReportSettings.UserId;
+                settingInDb.ReportTypes = emailReportSettings.ReportTypes;
+                settingInDb.FromWhen = emailReportSettings.FromWhen;
+                settingInDb.EmailOccurence = emailReportSettings.EmailOccurence;
+            }
+
+            applicationDbContext.SaveChanges();
+        }
+
+        public void DeleteReportSetting(EmailReportSettings emailReportSettings)
+        {
+            var settingInDb = applicationDbContext.EmailReportSettings.SingleOrDefault(x => x.Id == emailReportSettings.Id);
+
+            if (settingInDb != null)
+            {
+                applicationDbContext.EmailReportSettings.Remove(settingInDb);
+            }
+
+            applicationDbContext.SaveChanges();
         }
     }
 }

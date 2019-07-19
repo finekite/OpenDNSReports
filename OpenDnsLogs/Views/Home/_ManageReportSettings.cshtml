@@ -2,7 +2,7 @@
 
 <button id="collapse-button" type="button" class="btn btn-info" data-toggle="collapse" data-target="#demo">Add another report</button>
 <div id="demo" style="display:none">
-    @using (Ajax.BeginForm("ManageEmailReports", "Home", new AjaxOptions
+    @using (Ajax.BeginForm("", "Home", new AjaxOptions
     {
         HttpMethod = "POST",
         UpdateTargetId = "report-view"
@@ -10,25 +10,25 @@
     {
         @Html.HiddenFor(x => x.Email)
         @Html.HiddenFor(x => x.UserId)
-
+        @Html.HiddenFor(x => x.Id)
         <div class="row report-and-filter-options" style="padding-top:30px">
             <div class="col-lg-2" style="width:20%">
                 Report Type:
                 @Html.ValidationMessageFor(x => x.EmailReportSettings.ReportTypes, "", new { @class = "text-danger" })
-                @Html.EnumDropDownListFor(x => x.EmailReportSettings.ReportTypes, "Select", new { @class = "form-control", required = "required" })
+                @Html.EnumDropDownListFor(x => x.EmailReportSettings.ReportTypes, "Select", new { @class = "form-control", id="report-type", required = "required" })
             </div>
             <div class="col-lg-2" style="margin-left:-1px; width:20%">
                 Email Occurence:
                 @Html.ValidationMessageFor(x => x.EmailReportSettings.EmailOccurence, "", new { @class = "text-danger" })
-                @Html.EnumDropDownListFor(x => x.EmailReportSettings.EmailOccurence, "Select", new { @class = "form-control email-class"@*, required = "required"*@})
+                @Html.EnumDropDownListFor(x => x.EmailReportSettings.EmailOccurence, "Select", new { @class = "form-control email-class", id="email-occurence" @*, required = "required"*@})
             </div>
             <div class="col-lg-2" style="width:20%">
                 From When:
                 @Html.ValidationMessageFor(x => x.EmailReportSettings.FromWhen, "", new { @class = "text-danger" })
-                @Html.EnumDropDownListFor(x => x.EmailReportSettings.FromWhen, "Select", new { @class = "form-control email-class", @style = @"width:100%"@*, required = "required"*@})
+                @Html.EnumDropDownListFor(x => x.EmailReportSettings.FromWhen, "Select", new { @class = "form-control email-class", id= "from-when", @style = @"width:100%"@*, required = "required"*@})
             </div>
             <div class="col-lg-2" style="width:20%; margin-top: 16px;">
-                <input type="submit" value="Submit" class="btn btn-success" />
+                <input type="submit" id="submit-add-email-settings" value="Submit" class="btn btn-success" />
             </div>
             <div id="error-message"></div>
         </div>
@@ -51,13 +51,44 @@
                 <td>@setting.ReportTypes.ToString()</td>
                 <td>@setting.EmailOccurence.ToString()</td>
                 <td>@setting.FromWhen.ToString()</td>
-                <td>@Html.ActionLink("Edit", "Edit") &nbsp;&nbsp; @Html.ActionLink("Delete", "Delete")</td>
+                <td>
+                    <a href="#" onclick="@("editEmailSettings(" + (int)setting.ReportTypes + "," + (int)setting.EmailOccurence + "," + (int)setting.FromWhen + "," + setting.Id + ")");" class="edit-email-settings">Edit</a>
+                    &nbsp;
+                    &nbsp;
+                    <a href="#" onclick="@("deleteEmailSettings(" + (int)setting.ReportTypes + "," + (int)setting.EmailOccurence + "," + (int)setting.FromWhen + "," + setting.Id + ")");" class="delete-email-settings">Delete</a>
+                </td>
             </tr>
         }
     }
 </table>
+<div id="whoKnows"></div>
 <script>
     $("#collapse-button").click(function () {
         $("#demo").toggle();
+        $('#submit-add-email-settings').val('Submit');
+        $('#submit-add-email-settings').removeClass('btn-warning');
+        $('#submit-add-email-settings').addClass('btn-success');
+        $('form').attr('action', '/Home/AddEmailReportSettings');
     });
+
+    function editEmailSettings(reportType, emailOccurence, fromWhen, settingsId) {
+        $("#demo").show();
+        $('#submit-add-email-settings').val('Edit');
+        $('#submit-add-email-settings').removeClass('btn-success');
+        $('#submit-add-email-settings').addClass('btn-warning');
+        $('form').attr('action', '/Home/EditEmailReportSettings');
+        document.getElementById('report-type').value = parseInt(reportType);
+        document.getElementById('email-occurence').value = parseInt(emailOccurence);
+        document.getElementById('from-when').value = parseInt(fromWhen);
+        document.getElementById('Id').value = settingsId;
+    }
+
+    function deleteEmailSettings(reportType, emailOccurence, fromWhen, settingsId) {
+        $('form').attr('action', '/Home/DeleteEmailReportSettings');
+        document.getElementById('report-type').value = parseInt(reportType);
+        document.getElementById('email-occurence').value = parseInt(emailOccurence);
+        document.getElementById('from-when').value = parseInt(fromWhen);
+        document.getElementById('Id').value = settingsId;
+        $('#submit-add-email-settings').trigger('click');
+    }
 </script>

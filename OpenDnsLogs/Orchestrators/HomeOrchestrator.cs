@@ -115,5 +115,19 @@ namespace OpenDnsLogs.Orchestrators
             reportsModel.EmailReportSettings.UserId = reportsModel.UserId;
             emailService.AddReportSetting(reportsModel.EmailReportSettings);
         }
+
+        public void EditEmailReportSetting(ManageEmailReportsModel reportsModel)
+        {
+            reportsModel.EmailReportSettings.UserId = reportsModel.UserId;
+            reportsModel.EmailReportSettings.Id = reportsModel.Id;
+            emailService.EditReportSetting(reportsModel.EmailReportSettings);
+        }
+
+        public void DeleteEmailReportSetting(ManageEmailReportsModel reportsModel)
+        {
+            reportsModel.EmailReportSettings.UserId = reportsModel.UserId;
+            reportsModel.EmailReportSettings.Id = reportsModel.Id;
+            emailService.DeleteReportSetting(reportsModel.EmailReportSettings);
+        }
     }
 }

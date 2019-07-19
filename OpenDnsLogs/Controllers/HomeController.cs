@@ -126,18 +126,19 @@ namespace OpenDnsLogs.Controllers
         {
             try
             {
+                var userId = await homeOrchestrator.GetUserId(email);
+
                 var model = new ManageEmailReportsModel
                 {
                     EmailReportSettingsList = await homeOrchestrator.GetEmailReportSettings(email),
-                    Email = email
+                    Email = email,
+                    UserId = await homeOrchestrator.GetUserId(email)
                 };
 
-                if (model.EmailReportSettingsList == null || !model.EmailReportSettingsList.Any())
+                if (model.EmailReportSettingsList == null)
                 {
                     return Json("We could not find any reports for your account. Please go to Set Up Email Reports to set up your email settings.", JsonRequestBehavior.AllowGet);
                 }
-
-                model.UserId = model.EmailReportSettingsList.FirstOrDefault().UserId;
 
                 return View("_ManageReportSettings", model);
             }
@@ -148,9 +149,23 @@ namespace OpenDnsLogs.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> ManageEmailReports(ManageEmailReportsModel model)
+        public async Task<ActionResult> AddEmailReportSettings(ManageEmailReportsModel model)
         {
             homeOrchestrator.AddEmailReportSetting(model);
+            return await ManageEmailReports(model.Email);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> EditEmailReportSettings(ManageEmailReportsModel model)
+        {
+            homeOrchestrator.EditEmailReportSetting(model);
+            return await ManageEmailReports(model.Email);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> DeleteEmailReportSettings(ManageEmailReportsModel model)
+        {
+            homeOrchestrator.DeleteEmailReportSetting(model);
             return await ManageEmailReports(model.Email);
         }
 

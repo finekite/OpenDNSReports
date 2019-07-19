@@ -13,5 +13,9 @@ namespace OpenDnsLogs.Domain.Services.Email
         List<EmailReportSettings> GetEmailReportSettings(string userid);
 
         void AddReportSetting(EmailReportSettings emailReportSettings);
+
+        void EditReportSetting(EmailReportSettings emailReportSettings);
+
+        void DeleteReportSetting(EmailReportSettings emailReportSettings);
     }
 }

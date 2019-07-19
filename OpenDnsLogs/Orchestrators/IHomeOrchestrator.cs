@@ -24,5 +24,9 @@ namespace OpenDnsLogs.Orchestrators
         Task<string> GetUserId(string email);
 
         void AddEmailReportSetting(ManageEmailReportsModel reportsModel);
+
+        void EditEmailReportSetting(ManageEmailReportsModel reportsModel);
+
+        void DeleteEmailReportSetting(ManageEmailReportsModel reportsModel);
     }
 }
