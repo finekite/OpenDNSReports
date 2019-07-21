@@ -1,14 +1,14 @@
 ﻿@model OpenDns.Contracts.ReportRequestDTO
 
 <div id="modal-div">
-    <script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+ 
     @using (Ajax.BeginForm("", "Home", new AjaxOptions
     {
         HttpMethod = "POST",
         UpdateTargetId = "report-view",
         OnBegin = "getActionClicked",
         OnFailure = "showModelValidationMessages",
-        OnSuccess = "closeModal"
+        OnSuccess = "closeModal"  
     }))
     {
         @Html.ValidationSummary(true)

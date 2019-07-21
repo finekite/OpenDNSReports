@@ -1,4 +1,5 @@
 ﻿@model OpenDnsLogs.Models.ManageEmailReportsModel
+@using OpenDnsLogs.Domain.Extensions;
 
 <button id="collapse-button" type="button" class="btn btn-info" data-toggle="collapse" data-target="#demo">Add another report</button>
 <div id="demo" style="display:none">
@@ -15,7 +16,7 @@
             <div class="col-lg-2" style="width:20%">
                 Report Type:
                 @Html.ValidationMessageFor(x => x.EmailReportSettings.ReportTypes, "", new { @class = "text-danger" })
-                @Html.EnumDropDownListFor(x => x.EmailReportSettings.ReportTypes, "Select", new { @class = "form-control", id="report-type", required = "required" })
+                @Html.EnumDropDownListFor(x => x.EmailReportSettings.ReportTypes, "Select", new { @class = "form-control", id = "report-type", required = "required" })
             </div>
             <div class="col-lg-2" style="margin-left:-1px; width:20%">
                 Email Occurence:
@@ -48,9 +49,9 @@
         foreach (var setting in Model.EmailReportSettingsList)
         {
             <tr>
-                <td>@setting.ReportTypes.ToString()</td>
+                <td>@setting.ReportTypes.ToName()</td>
                 <td>@setting.EmailOccurence.ToString()</td>
-                <td>@setting.FromWhen.ToString()</td>
+                <td>@setting.FromWhen.ToName()</td>
                 <td>
                     <a href="#" onclick="@("editEmailSettings(" + (int)setting.ReportTypes + "," + (int)setting.EmailOccurence + "," + (int)setting.FromWhen + "," + setting.Id + ")");" class="edit-email-settings">Edit</a>
                     &nbsp;
@@ -61,7 +62,7 @@
         }
     }
 </table>
-<div id="whoKnows"></div>
+
 <script>
     $("#collapse-button").click(function () {
         $("#demo").toggle();

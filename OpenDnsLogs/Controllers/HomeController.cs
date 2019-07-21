@@ -140,7 +140,7 @@ namespace OpenDnsLogs.Controllers
                     return Json("We could not find any reports for your account. Please go to Set Up Email Reports to set up your email settings.", JsonRequestBehavior.AllowGet);
                 }
 
-                return View("_ManageReportSettings", model);
+                return PartialView("_ManageReportSettings", model);
             }
             catch (Exception ex)
             {

@@ -1,7 +1,6 @@
 ﻿<!------ Include the above in your HEAD tag ---------->
 @model OpenDns.Contracts.ReportRequestDTO
 
-<link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
 <div class="bootstrap snippet">
     <div class="row">
         <div class="col-lg-4 col-sm-4">
@@ -28,7 +27,7 @@
 
         <div class="col-lg-4 col-sm-4">
             <div class="circle-tile ">
-                <a href="@Url.Action("ManageEmailReports", "Home", new { Email = Model.EmailAddress })" data-ajax="true" data-ajax-update="#report-view" data-ajax-mode="replace">
+                <a href="@Url.Action("ManageEmailReports", "Home", new { Email = Model.EmailAddress })" data-ajax="true" data-ajax-update="#report-view">
                     <div class="circle-tile-heading blue"><i class="fa fa-users fa-fw fa-3x"></i></div>
                     <div class="circle-tile-content blue">
                         <div class="circle-tile-description text-faded"> Manage email reports</div>
@@ -38,12 +37,12 @@
         </div>
     </div>
 </div>
-    @Html.Partial("ReportModal")
+@Html.Partial("ReportModal")
 <div id="report-view"></div>
 <script>
     $(document).ready(function () {
         onEmailClick();
-        onReportNowClick(); 
+        onReportNowClick();
     });
 
     function onEmailClick() {
@@ -83,19 +82,6 @@
             $('.email-password').attr('type', 'text');
             $('#EmailAddress').val('p');
             $('#Password').val('p');
-    }
-
-    function setUpEmailReport() {
-        $.ajax({
-        url: '@Url.Action("GenerateReportNow")',
-            crossDomain: true,
-            success: function (result, textStatus, request) {
-                $('#report-view').html(result);
-            },
-            error: function (txhr, ajaxOptions, thrownError) {
-                window.alert(thrownError);
-            }
-        });
     }
 
     function closeModal() {
