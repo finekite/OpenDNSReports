@@ -7,6 +7,7 @@ namespace OpenDns.Contracts
     {
         [Required]
         [Display(Name = "Username")]
+        [EmailAddress(ErrorMessage = "Invalid Email Address")]
         public string UserName { get; set; }
 
         [Required]

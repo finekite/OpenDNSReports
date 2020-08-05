@@ -28,23 +28,29 @@ namespace OpenDnsLogs.Controllers
 
         public async Task<ActionResult> Login(LoginModel model)
         {
-            try
+            if (!ModelHasCustomErrors<ModelError>((x) => !x.ErrorMessage.ToLower().Contains("Email")))
             {
-                if (await homeOrchestrator.VerifyOpenDNSLoginNewHttpClient(model.Login))
+
+                try
                 {
-                    return View("MyDashboard", new ReportRequestDTO { EmailAddress = model.Login.UserName, Password = model.Login.Password });
+                    if (await homeOrchestrator.VerifyOpenDNSLoginNewHttpClient(model.Login))
+                    {
+                        return View("MyDashboard", new ReportRequestDTO { EmailAddress = model.Login.UserName, Password = model.Login.Password });
+                    }
+
+                    model.ErrorMessage = "Login unsuccessful. Please ensure you have an OpenDns account";
+
+                    return View("Index", model);
                 }
+                catch (Exception ex)
+                {
+                    model.ErrorMessage = "Something went wrong while processing your request. Please try again.";
 
-                model.ErrorMessage = "Login unsuccessful. Please ensure you have an OpenDns account";
-
-                return View("Index", model);
+                    return View("Index", model);
+                }
             }
-            catch(Exception ex)
-            {
-                model.ErrorMessage = "Something went wrong while processing your request. Please try again.";
 
-                return View("Index", model);
-            }
+            return View("Index", model);
         }
 
         [HttpPost]

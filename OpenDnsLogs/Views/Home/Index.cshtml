@@ -8,6 +8,7 @@
             <h1>Login Form</h1>
             <p style="font:15px Helvetica, Arial, sans-serif;">Enter your OpenDNS login information</p>
             <div>
+                @Html.ValidationMessageFor(x => x.Login.UserName, "", new { @class = "text-danger" })
                 @Html.TextBoxFor(x => x.Login.UserName, new { id = "username", required = "Username is required", placeholder = "Username" })
             </div>
             <div>
