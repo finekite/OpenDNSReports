@@ -14,7 +14,6 @@ namespace OpenDnsLogs.Tests
             byte[] key = new byte[18];
             Crypto.GetRandomBytes(key);
 
-            // yo is back
             var keyToBase64 = Convert.ToBase64String(key);
         }
     }
