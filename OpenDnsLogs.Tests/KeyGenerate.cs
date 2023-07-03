@@ -11,6 +11,8 @@ namespace OpenDnsLogs.Tests
         [TestMethod]
         public void KeyGenerator()
         {
+            //yo
+            //yo 2
             byte[] key = new byte[18];
             Crypto.GetRandomBytes(key);
 
